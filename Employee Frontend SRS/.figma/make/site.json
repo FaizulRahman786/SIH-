@@ -1,0 +1,10 @@
+{
+  "description": "Streamlines frontend development by automating implementation, testing, and refinement of employee interfaces to match detailed design specs precisely.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
