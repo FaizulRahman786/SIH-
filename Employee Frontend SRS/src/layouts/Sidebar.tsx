@@ -4,7 +4,7 @@ import {
   ClipboardList, FileText, Bot, LogOut, ChevronRight, Zap,
   Sun, Moon, Monitor,
 } from "lucide-react";
-import { authApi } from "../services/authApi";
+import { useAuth } from "../context/AuthContext";
 import { useTheme, type ThemeMode } from "../hooks/useTheme";
 
 const NAV_ITEMS = [
@@ -32,11 +32,12 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const { mode, setMode } = useTheme();
 
   const handleLogout = async () => {
-    await authApi.logout();
-    navigate("/login");
+    await logout();
+    navigate("/login", { replace: true });
   };
 
   return (

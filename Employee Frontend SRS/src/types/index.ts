@@ -1,9 +1,41 @@
+// ─── Role types ───────────────────────────────────────────────────────────────
+export type UserRole = "employee" | "admin";
+
 export interface User {
   id: string;
   name: string;
   email: string;
   avatar?: string;
-  role: "employee";
+  role: UserRole;
+}
+
+// ─── Auth API contract (future backend shapes) ────────────────────────────────
+// POST /auth/login  →  LoginResponse
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  role: UserRole;
+  /** When true, route to /admin-verify for second-stage verification */
+  requiresAdminVerification: boolean;
+}
+
+// POST /auth/admin/verify  →  AdminVerifyResponse
+// DEMO: frontend mock only — real verification must be backend-controlled
+export interface AdminVerifyRequest {
+  email: string;
+  password: string;
+  /** Never validated in frontend JS — passed to backend only */
+  adminSecretCode: string;
+}
+
+export interface AdminVerifyResponse {
+  authenticated: boolean;
+  user: User;
+  role: UserRole;
 }
 
 export interface EmployeeProfile {

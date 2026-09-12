@@ -3,7 +3,9 @@ import { useNavigate } from "react-router";
 import {
   LayoutDashboard, User, BarChart3, TrendingDown, Map, BookOpen,
   ClipboardList, FileText, Bot, Search, ArrowRight, Command,
+  Users, Triangle, TrendingUp, Flag, Bell, Settings,
 } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 interface CommandItem {
   id: string;
@@ -14,7 +16,7 @@ interface CommandItem {
   keywords: string[];
 }
 
-const COMMANDS: CommandItem[] = [
+const EMPLOYEE_COMMANDS: CommandItem[] = [
   { id: "dashboard", label: "Dashboard", description: "Overview and KPIs", path: "/dashboard", icon: LayoutDashboard, keywords: ["home", "overview", "stats"] },
   { id: "profile", label: "My Profile", description: "Professional info and career goal", path: "/profile", icon: User, keywords: ["me", "info", "career"] },
   { id: "competencies", label: "Competency Profile", description: "Skills and competency levels", path: "/competencies", icon: BarChart3, keywords: ["skills", "radar", "levels"] },
@@ -26,6 +28,20 @@ const COMMANDS: CommandItem[] = [
   { id: "assistant", label: "AI Learning Coach", description: "Chat with your AI coach", path: "/assistant", icon: Bot, keywords: ["chat", "ai", "help"] },
 ];
 
+const ADMIN_COMMANDS: CommandItem[] = [
+  { id: "admin-dashboard", label: "Admin Dashboard", description: "Workforce capability overview & KPIs", path: "/admin", icon: LayoutDashboard, keywords: ["admin", "home", "stats", "workforce"] },
+  { id: "admin-employees", label: "Employees Directory", description: "Employee skill ratings and individual profiles", path: "/admin/employees", icon: Users, keywords: ["employees", "people", "staff", "directory"] },
+  { id: "admin-competency-analytics", label: "Competency Analytics", description: "Department and domain competency charts", path: "/admin/competency-analytics", icon: BarChart3, keywords: ["analytics", "scores", "radar", "departments"] },
+  { id: "admin-skill-gaps", label: "Skill Gap Distribution", description: "Workforce skill gap breakdown and priorities", path: "/admin/skill-gap-distribution", icon: Triangle, keywords: ["gaps", "deficits", "critical", "priority"] },
+  { id: "admin-training-demand", label: "Training Demand", description: "Forecasting departmental training needs", path: "/admin/training-demand", icon: TrendingUp, keywords: ["training", "demand", "needs", "courses"] },
+  { id: "admin-course-utilization", label: "Course Utilization", description: "Enrollment rates and course impact analytics", path: "/admin/course-utilization", icon: BookOpen, keywords: ["courses", "utilization", "iGOT", "completion"] },
+  { id: "admin-assessments", label: "Assessment Overview", description: "Workforce assessment pass rates and results", path: "/admin/assessments", icon: ClipboardList, keywords: ["assessments", "tests", "scores", "evaluations"] },
+  { id: "admin-documents", label: "Document Archive", description: "Learning manuals and policy documents", path: "/admin/documents", icon: FileText, keywords: ["documents", "manuals", "circulars", "pdf"] },
+  { id: "admin-reports", label: "Executive Reports", description: "Workforce capability and compliance reports", path: "/admin/reports", icon: Flag, keywords: ["reports", "export", "csv", "audit"] },
+  { id: "admin-notifications", label: "Admin Notifications", description: "System alerts and training milestone flags", path: "/admin/notifications", icon: Bell, keywords: ["alerts", "notifications", "updates"] },
+  { id: "admin-settings", label: "System Settings", description: "Competency thresholds and portal configuration", path: "/admin/settings", icon: Settings, keywords: ["settings", "config", "thresholds", "admin"] },
+];
+
 interface CommandPaletteProps {
   open: boolean;
   onClose: () => void;
@@ -35,11 +51,14 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
+  const activeCatalog = user?.role === "admin" ? ADMIN_COMMANDS : EMPLOYEE_COMMANDS;
+
   const filtered = query.trim()
-    ? COMMANDS.filter((c) => {
+    ? activeCatalog.filter((c) => {
         const q = query.toLowerCase();
         return (
           c.label.toLowerCase().includes(q) ||
@@ -47,7 +66,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
           c.keywords.some((k) => k.includes(q))
         );
       })
-    : COMMANDS;
+    : activeCatalog;
 
   useEffect(() => {
     if (open) {

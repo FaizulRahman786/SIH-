@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Menu, Bell, CheckCircle, TrendingUp, BookOpen, FileText, Sparkles, Search } from "lucide-react";
 import { DEMO_USER, DEMO_PROFILE } from "../data/mockData";
+import { useAuth } from "../context/AuthContext";
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -72,11 +73,15 @@ const SAMPLE_NOTIFICATIONS: Notification[] = [
 ];
 
 export function TopBar({ onMenuClick, onCmdPalette }: TopBarProps) {
+  const { user } = useAuth();
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState(SAMPLE_NOTIFICATIONS);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const initials = DEMO_USER.name
+  const displayName = user?.name ?? DEMO_USER.name;
+  const displayRole = user?.role === "admin" ? "Administrator" : DEMO_PROFILE.designation;
+
+  const initials = displayName
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -247,9 +252,9 @@ export function TopBar({ onMenuClick, onCmdPalette }: TopBarProps) {
               className="text-sm font-medium text-[var(--color-text)] leading-tight"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {DEMO_USER.name}
+              {displayName}
             </div>
-            <div className="text-[11px] text-[var(--color-muted-fg)]">{DEMO_PROFILE.designation}</div>
+            <div className="text-[11px] text-[var(--color-muted-fg)]">{displayRole}</div>
           </div>
         </div>
       </div>

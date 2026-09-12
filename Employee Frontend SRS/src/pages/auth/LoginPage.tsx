@@ -1,10 +1,11 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router"
 import { Zap, Eye, EyeOff, Loader2 } from "lucide-react"
-import { authApi } from "../../services/authApi"
+import { useAuth } from "../../context/AuthContext"
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [email, setEmail] = useState("arjun.sharma@mospi.gov.in")
   const [password, setPassword] = useState("demo1234")
   const [showPassword, setShowPassword] = useState(false)
@@ -20,8 +21,17 @@ export default function LoginPage() {
     }
     setLoading(true)
     try {
-      await authApi.login({ email, password })
-      navigate("/dashboard")
+      const response = await login({ email, password })
+      if (response.requiresAdminVerification) {
+        // Admin: go to second-stage verification
+        navigate("/admin-verify", { replace: true })
+      } else if (response.role === "admin") {
+        // Admin verified in single stage (future: SSO)
+        navigate("/admin", { replace: true })
+      } else {
+        // Employee: go to dashboard
+        navigate("/dashboard", { replace: true })
+      }
     } catch {
       setError("Invalid credentials. Please try again.")
     } finally {
@@ -124,17 +134,20 @@ export default function LoginPage() {
               Sign in
             </h1>
             <p className="text-sm text-[var(--color-muted-fg)]">
-              Enter your government credentials to access your competency
-              profile.
+              Sign in to SkillSaarthi AI. Employees go to their portal;
+              administrators will proceed to a second verification step.
             </p>
           </div>
 
-          <div className="bg-[var(--color-caution-bg)] border border-[var(--color-caution-fg)]/30 rounded-lg px-4 py-3 mb-6">
-            <div className="text-xs font-mono font-medium text-[var(--color-caution-fg)] uppercase tracking-wider mb-1">
-              Demo credentials pre-filled
+          <div className="bg-[var(--color-caution-bg)] border border-[var(--color-caution-fg)]/30 rounded-lg px-4 py-3 mb-6 space-y-1.5">
+            <div className="text-xs font-mono font-medium text-[var(--color-caution-fg)] uppercase tracking-wider">
+              Demo Mode — Credentials pre-filled
             </div>
             <div className="text-xs text-[var(--color-caution-fg)]">
-              Click "Sign in" to explore the platform with synthetic data.
+              <span className="font-semibold">Employee:</span> arjun.sharma@mospi.gov.in / demo1234
+            </div>
+            <div className="text-xs text-[var(--color-caution-fg)]">
+              <span className="font-semibold">Admin:</span> admin@mospi.gov.in / admin2024 → then verify
             </div>
           </div>
 
