@@ -1,0 +1,12 @@
+{
+  "title": "SkillSaarthi AI",
+  "name": "SkillSaarthi AI",
+  "description": "SkillSaarthi AI — AI-Powered Competency and Workforce Intelligence Platform",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
