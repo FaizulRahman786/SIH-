@@ -1,292 +1,219 @@
 import { useEffect, useState } from 'react'
-import AnalyticsSection from '../../components/AnalyticsSection'
-import EmployeeProfileModal from '../../components/EmployeeProfileModal'
-import EmployeeTable, { type Employee } from '../../components/EmployeeTable'
-import FilterBar from '../../components/FilterBar'
+
+type Employee = {
+  id: number
+  name: string
+  designation: string
+  department: string
+  role: string
+  score: number
+  gaps: string[]
+  learning: 'Active' | 'Review' | 'Not started'
+  lastAssessment: string
+}
+
+type EmployeesProps = {
+  onNavigate?: (page: string) => void
+}
 
 const employees: Employee[] = [
-  {
-    id: 1,
-    name: 'Ananya Sharma',
-    initials: 'AS',
-    designation: 'Senior Data Analyst',
-    department: 'Finance',
-    role: 'Analyst',
-    score: 4.6,
-    gaps: ['Technical'],
-    learning: 'Active',
-    lastAssessment: '02 Sep 2026',
-    experience: '8 years',
-    goal: 'Lead data strategy',
-    mentor: 'Dr. Meera Rao',
-    history: [
-      { date: '02 Sep 2026', title: 'Quarterly competency review', score: '4.6 / 5', note: 'Technical competency updated' },
-      { date: '14 Jun 2026', title: 'Statistical methods quiz', score: '92%', note: 'Passed with distinction' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Vikram Patel',
-    initials: 'VP',
-    designation: 'Policy Officer',
-    department: 'Governance',
-    role: 'Officer',
-    score: 3.8,
-    gaps: ['Digital Governance'],
-    learning: 'Review',
-    lastAssessment: '28 Aug 2026',
-    experience: '5 years',
-    goal: 'Shape digital policy',
-    mentor: 'Rakesh Menon',
-    history: [
-      { date: '28 Aug 2026', title: 'Digital governance assessment', score: '3.8 / 5', note: 'Gap identified in data ethics' },
-      { date: '07 May 2026', title: 'Policy foundations quiz', score: '84%', note: 'Competency updated' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Zeenat Zahra',
-    initials: 'ZZ',
-    designation: 'Programme Lead',
-    department: 'HR',
-    role: 'Manager',
-    score: 4.2,
-    gaps: ['Managerial'],
-    learning: 'Active',
-    lastAssessment: '25 Aug 2026',
-    experience: '11 years',
-    goal: 'Build high-performing teams',
-    mentor: 'Priya Nair',
-    history: [
-      { date: '25 Aug 2026', title: 'Leadership competency review', score: '4.2 / 5', note: 'Managerial competency updated' },
-      { date: '09 Apr 2026', title: 'People leadership quiz', score: '89%', note: 'Passed' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'Rohan Das',
-    initials: 'RD',
-    designation: 'Field Coordinator',
-    department: 'Field Ops',
-    role: 'Coordinator',
-    score: 2.9,
-    gaps: ['Technical', 'Digital'],
-    learning: 'Review',
-    lastAssessment: '19 Aug 2026',
-    experience: '3 years',
-    goal: 'Lead field programmes',
-    mentor: 'Amit Kulkarni',
-    history: [
-      { date: '19 Aug 2026', title: 'Field readiness assessment', score: '2.9 / 5', note: 'Critical technical gap flagged' },
-      { date: '12 Mar 2026', title: 'Digital tools quiz', score: '68%', note: 'Retake recommended' },
-    ],
-  },
-  {
-    id: 5,
-    name: 'Ishita Menon',
-    initials: 'IM',
-    designation: 'Technology Specialist',
-    department: 'IT',
-    role: 'Specialist',
-    score: 4.4,
-    gaps: ['Managerial'],
-    learning: 'Active',
-    lastAssessment: '16 Aug 2026',
-    experience: '7 years',
-    goal: 'Own platform reliability',
-    mentor: 'Sanjay Kapoor',
-    history: [
-      { date: '16 Aug 2026', title: 'Technical competency review', score: '4.4 / 5', note: 'Strong technical performance' },
-    ],
-  },
-  {
-    id: 6,
-    name: 'Arjun Singh',
-    initials: 'AR',
-    designation: 'Operations Manager',
-    department: 'Field Ops',
-    role: 'Manager',
-    score: 3.4,
-    gaps: ['Statistical', 'Technical'],
-    learning: 'Not started',
-    lastAssessment: '11 Aug 2026',
-    experience: '9 years',
-    goal: 'Modernise operations',
-    mentor: 'Unassigned',
-    history: [
-      { date: '11 Aug 2026', title: 'Operations review', score: '3.4 / 5', note: 'Learning path recommended' },
-    ],
-  },
+  { id: 1, name: 'Ananya Sharma', designation: 'Senior Data Analyst', department: 'Finance', role: 'Analyst', score: 4.6, gaps: ['Technical'], learning: 'Active', lastAssessment: '02 Sep 2026' },
+  { id: 2, name: 'Vikram Patel', designation: 'Policy Officer', department: 'Governance', role: 'Officer', score: 3.8, gaps: ['Digital Governance'], learning: 'Review', lastAssessment: '28 Aug 2026' },
+  { id: 3, name: 'Zeenat Zahra', designation: 'Programme Lead', department: 'HR', role: 'Manager', score: 4.2, gaps: ['Managerial'], learning: 'Active', lastAssessment: '25 Aug 2026' },
+  { id: 4, name: 'Rohan Das', designation: 'Field Coordinator', department: 'Field Ops', role: 'Coordinator', score: 2.9, gaps: ['Technical', 'Digital'], learning: 'Review', lastAssessment: '19 Aug 2026' },
+  { id: 5, name: 'Ishita Menon', designation: 'Technology Specialist', department: 'IT', role: 'Specialist', score: 4.4, gaps: ['Managerial'], learning: 'Active', lastAssessment: '16 Aug 2026' },
+  { id: 6, name: 'Arjun Singh', designation: 'Operations Manager', department: 'Field Ops', role: 'Manager', score: 3.4, gaps: ['Statistical', 'Technical'], learning: 'Not started', lastAssessment: '11 Aug 2026' },
+  { id: 7, name: 'Kavita Rao', designation: 'Data Analyst', department: 'Finance', role: 'Analyst', score: 3.9, gaps: ['Statistical'], learning: 'Active', lastAssessment: '08 Aug 2026' },
+  { id: 8, name: 'Nikhil Verma', designation: 'Policy Officer', department: 'Governance', role: 'Officer', score: 3.5, gaps: ['Digital Governance', 'Technical'], learning: 'Review', lastAssessment: '04 Aug 2026' },
 ]
 
-const departments = ['Finance', 'Governance', 'HR', 'Field Ops', 'IT']
-const roles = ['Analyst', 'Officer', 'Manager', 'Coordinator', 'Specialist']
-const pageSize = 4
+const departments = ['All departments', 'Finance', 'Governance', 'HR', 'Field Ops', 'IT']
+const roles = ['All roles', 'Analyst', 'Officer', 'Manager', 'Coordinator', 'Specialist']
+const competencyLevels = ['All levels', 'High', 'Steady', 'Needs focus']
 
-function Employees() {
-  const [search, setSearch] = useState('')
+function getCompetencyLevel(score: number) {
+  if (score >= 4) {
+    return 'High'
+  }
+
+  if (score >= 3) {
+    return 'Steady'
+  }
+
+  return 'Needs focus'
+}
+
+function Employees({ onNavigate }: EmployeesProps) {
   const [department, setDepartment] = useState('All departments')
   const [role, setRole] = useState('All roles')
   const [competency, setCompetency] = useState('All levels')
-  const [page, setPage] = useState(1)
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
-  const [compareIds, setCompareIds] = useState<number[]>([])
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>(employees)
   const [notice, setNotice] = useState('')
 
   useEffect(() => {
-    if (notice === '') {
-      return
-    }
+    const newEmployees = employees.filter(employee => {
+      const departmentMatches = department === 'All departments' || employee.department === department
+      const roleMatches = role === 'All roles' || employee.role === role
+      const competencyMatches = competency === 'All levels' || getCompetencyLevel(employee.score) === competency
 
-    const timer = window.setTimeout(() => {
-      setNotice('')
-    }, 2600)
+      return departmentMatches && roleMatches && competencyMatches
+    })
 
-    return () => {
-      window.clearTimeout(timer)
-    }
-  }, [notice])
+    setFilteredEmployees(newEmployees)
+  }, [department, role, competency])
 
-  function showNotice(message: string) {
+  const totalEmployees = filteredEmployees.length
+  const totalScore = filteredEmployees.reduce((total, employee) => total + employee.score, 0)
+  const averageScore = totalEmployees > 0 ? totalScore / totalEmployees : 0
+  const missingSkills = filteredEmployees.reduce((total, employee) => total + employee.gaps.length, 0)
+  const activeLearners = filteredEmployees.filter(employee => employee.learning === 'Active').length
+
+  const showNotice = (message: string) => {
     setNotice(message)
   }
 
-  function resetPage() {
-    setPage(1)
+  const navigateFromEmployee = (employee: Employee, page: string) => {
+    showNotice(`${page} opened for ${employee.name}`)
+    onNavigate?.(page)
   }
 
-  function updateSearch(value: string) {
-    setSearch(value)
-    resetPage()
+  const exportData = () => {
+    showNotice(`Employee data exported for ${filteredEmployees.length} employees`)
   }
 
-  function updateDepartment(value: string) {
-    setDepartment(value)
-    resetPage()
-  }
-
-  function updateRole(value: string) {
-    setRole(value)
-    resetPage()
-  }
-
-  function updateCompetency(value: string) {
-    setCompetency(value)
-    resetPage()
-  }
-
-  function toggleCompare(id: number) {
-    if (compareIds.includes(id)) {
-      setCompareIds(compareIds.filter(item => item !== id))
-      return
-    }
-
-    if (compareIds.length < 2) {
-      setCompareIds([...compareIds, id])
-    }
-  }
-
-  const filteredEmployees = employees.filter(employee => {
-    const employeeText = `${employee.name} ${employee.designation} ${employee.department}`
-    const matchesSearch = employeeText.toLowerCase().includes(search.toLowerCase())
-    const matchesDepartment = department === 'All departments' || employee.department === department
-    const matchesRole = role === 'All roles' || employee.role === role
-    const matchesCompetency = competency === 'All levels'
-      || competency === 'High' && employee.score >= 4
-      || competency === 'Steady' && employee.score >= 3 && employee.score < 4
-      || competency === 'Needs focus' && employee.score < 3
-
-    return matchesSearch && matchesDepartment && matchesRole && matchesCompetency
-  })
-
-  const pageCount = Math.max(1, Math.ceil(filteredEmployees.length / pageSize))
-  const firstEmployee = (page - 1) * pageSize
-  const visibleEmployees = filteredEmployees.slice(firstEmployee, firstEmployee + pageSize)
-  const lastEmployee = Math.min(page * pageSize, filteredEmployees.length)
-
-  function exportData(format: string) {
-    showNotice(`${format} export prepared for ${filteredEmployees.length} employees`)
+  const clearFilters = () => {
+    setDepartment('All departments')
+    setRole('All roles')
+    setCompetency('All levels')
   }
 
   return (
-    <div className="dashboard-page employees-page">
+    <div className="dashboard-page employees-page simple-employees-page">
       <div className="page-heading">
         <div>
           <div className="eyebrow">
-            PEOPLE / WORKFORCE DIRECTORY
+            PEOPLE / EMPLOYEE UPDATES
             <span className="live-dot" />
             LIVE DATA
           </div>
-          <h1>Employee directory</h1>
-          <p>Track capability, close skill gaps, and guide every learning journey.</p>
+          <h1>Employee Updates</h1>
+          <p>Check skill levels, find missing skills, and help employees learn.</p>
         </div>
         <div className="employee-heading-actions">
-          <button className="secondary-button" onClick={() => exportData('CSV')}>↓ Export CSV</button>
-          <button className="primary-button" onClick={() => exportData('PDF')}>↓ Export PDF</button>
+          <button className="secondary-button" onClick={() => showNotice('Training assignment opened for the selected employees')}>
+            Assign Training
+          </button>
+          <button className="primary-button" onClick={exportData}>
+            Export Employee Data
+          </button>
         </div>
       </div>
 
-      <section className="employee-summary">
-        <div><span>Total employees</span><strong>1,284</strong><small>+8.4% this month</small></div>
-        <div><span>Average competency</span><strong>3.8 <em>/ 5</em></strong><small className="positive">+0.3 this quarter</small></div>
-        <div><span>Critical gaps</span><strong>186</strong><small className="warning">14 need attention</small></div>
-        <div><span>Active learning</span><strong>742</strong><small className="positive">57.8% of workforce</small></div>
+      <section className="employee-filter-bar simple-employee-filters" aria-label="Employee filters">
+        <label>
+          Department
+          <select value={department} onChange={event => setDepartment(event.target.value)}>
+            {departments.map(item => <option key={item}>{item}</option>)}
+          </select>
+        </label>
+        <label>
+          Role
+          <select value={role} onChange={event => setRole(event.target.value)}>
+            {roles.map(item => <option key={item}>{item}</option>)}
+          </select>
+        </label>
+        <label>
+          Competency Level
+          <select value={competency} onChange={event => setCompetency(event.target.value)}>
+            {competencyLevels.map(item => <option key={item}>{item}</option>)}
+          </select>
+        </label>
+        <button className="clear-filter" onClick={clearFilters}>Clear Filters</button>
       </section>
 
-      <AnalyticsSection />
+      <section className="employee-summary">
+        <div>
+          <span>Total Employees</span>
+          <strong>{totalEmployees}</strong>
+          <small>Employees in this view</small>
+        </div>
+        <div>
+          <span>Average Skill Score</span>
+          <strong>{averageScore.toFixed(1)} <em>/ 5</em></strong>
+          <small>Organization target: 4.0</small>
+        </div>
+        <div>
+          <span>Missing Skills</span>
+          <strong>{missingSkills}</strong>
+          <small>Skills that need attention</small>
+        </div>
+        <div>
+          <span>Active Learners</span>
+          <strong>{activeLearners}</strong>
+          <small>Employees learning now</small>
+        </div>
+      </section>
 
       <section className="data-section employee-directory-section">
         <div className="section-heading">
           <div>
             <div className="eyebrow">DIRECTORY / {filteredEmployees.length} MATCHES</div>
-            <h2>All employees</h2>
+            <h2>All Employees</h2>
           </div>
-          {compareIds.length > 0 && (
-            <button className="secondary-button" onClick={() => showNotice(`Comparing ${compareIds.length} selected employees`)}>
-              Compare selected <span>-&gt;</span>
-            </button>
-          )}
+          <span className="table-count">Use the links in each row</span>
         </div>
 
-        <FilterBar
-          search={search}
-          department={department}
-          role={role}
-          competency={competency}
-          departments={departments}
-          roles={roles}
-          onSearch={updateSearch}
-          onDepartment={updateDepartment}
-          onRole={updateRole}
-          onCompetency={updateCompetency}
-        />
-
-        <EmployeeTable
-          employees={visibleEmployees}
-          onSelect={setSelectedEmployee}
-          selectedIds={compareIds}
-          onToggleCompare={toggleCompare}
-        />
-
-        <div className="pagination">
-          <span>Showing {filteredEmployees.length === 0 ? 0 : firstEmployee + 1}–{lastEmployee} of {filteredEmployees.length} employees</span>
-          <div>
-            <button disabled={page === 1} onClick={() => setPage(page - 1)} aria-label="Previous page">←</button>
-            <b>{page}</b>
-            <span>of {pageCount}</span>
-            <button disabled={page === pageCount} onClick={() => setPage(page + 1)} aria-label="Next page">→</button>
-          </div>
+        <div className="table-wrap employee-table-wrap simple-employee-table-wrap">
+          <table className="employee-table simple-employee-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Skill Score</th>
+                <th>Missing Skills</th>
+                <th>Learning</th>
+                <th>Employee Pages</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEmployees.map(employee => (
+                <tr key={employee.id}>
+                  <td>
+                    <div className="employee-name">
+                      <span className="employee-avatar">{employee.name.split(' ').map(name => name[0]).join('')}</span>
+                      <div>
+                        <strong>{employee.name}</strong>
+                        <small>{employee.designation}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{employee.role}</td>
+                  <td><span className="department-label">{employee.department}</span></td>
+                  <td><strong className={`score score-${employee.score < 3 ? 'low' : employee.score < 4 ? 'mid' : 'high'}`}>{employee.score.toFixed(1)}</strong> / 5</td>
+                  <td><span className="gap-cell"><strong>{employee.gaps.length}</strong><span>{employee.gaps.join(', ')}</span></span></td>
+                  <td><span className={`status ${employee.learning === 'Active' ? 'active' : employee.learning === 'Review' ? 'review' : 'pending'}`}>{employee.learning}</span></td>
+                  <td>
+                    <div className="employee-page-links">
+                      <button onClick={() => navigateFromEmployee(employee, 'Skill Gap Distribution')}>Gaps</button>
+                      <button onClick={() => navigateFromEmployee(employee, 'Training Demand')}>Demand</button>
+                      <button onClick={() => navigateFromEmployee(employee, 'Course Utilization')}>Courses</button>
+                      <button onClick={() => navigateFromEmployee(employee, 'Assessments')}>Assessments</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filteredEmployees.length === 0 && <div className="empty-state">No employees match these filters.</div>}
         </div>
+
+        <p className="plain-insight employee-insight">
+          {filteredEmployees.length === 0
+            ? 'Try clearing the filters to see all employees.'
+            : `${filteredEmployees[0].department} employees have the highest score in this filtered view. ${filteredEmployees.reduce((highest, employee) => employee.gaps.length > highest.gaps.length ? employee : highest, filteredEmployees[0]).department} has the most missing skills.`}
+        </p>
       </section>
-
-      {selectedEmployee && (
-        <EmployeeProfileModal
-          employee={selectedEmployee}
-          onClose={() => setSelectedEmployee(null)}
-          onFlag={() => showNotice(`${selectedEmployee.name} flagged for critical review`)}
-          onAssign={() => showNotice(`Programme assignment opened for ${selectedEmployee.name}`)}
-        />
-      )}
 
       {notice && <div className="toast" role="status">{notice}</div>}
     </div>
