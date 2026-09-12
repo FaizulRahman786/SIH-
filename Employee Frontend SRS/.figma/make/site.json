@@ -1,5 +1,7 @@
 {
-  "description": "Streamlines frontend development by automating implementation, testing, and refinement of employee interfaces to match detailed design specs precisely.",
+  "title": "SkillSaarthi AI",
+  "name": "SkillSaarthi AI",
+  "description": "SkillSaarthi AI — AI-Powered Competency and Workforce Intelligence Platform",
   "robots": {
     "index": false
   },

@@ -119,6 +119,48 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Target Role Readiness */}
+      <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-5 animate-fade-in-up">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Target size={15} className="text-[var(--color-blue-primary)]" />
+            <h2 className="text-sm font-semibold text-[var(--color-text)]" style={{ fontFamily: "var(--font-display)" }}>
+              Target Role Readiness · {profile.targetRole}
+            </h2>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-[var(--color-muted-fg)]">Overall Readiness:</span>
+            <span className="text-sm font-mono font-bold text-[var(--color-blue-primary)] bg-[var(--color-blue-muted)] px-2 py-0.5 rounded">
+              68%
+            </span>
+          </div>
+        </div>
+
+        <p className="text-xs text-[var(--color-muted-fg)] mb-4">
+          Deterministic capability matching score against MoSPI Senior Data Analyst role competency requirements.
+        </p>
+
+        <div className="space-y-2.5">
+          {[
+            { skill: "Statistics & Sampling", score: 86, color: "var(--color-blue-primary)" },
+            { skill: "SQL & Relational Databases", score: 74, color: "var(--color-blue-primary)" },
+            { skill: "Python & Scientific Computing", score: 52, color: "var(--color-warning-fg)" },
+            { skill: "Cloud Platforms (MeghRaj)", score: 42, color: "var(--color-warning-fg)" },
+            { skill: "Machine Learning / Predictive Modeling", score: 31, color: "var(--color-critical-fg)" },
+          ].map((item) => (
+            <div key={item.skill}>
+              <div className="flex justify-between text-xs mb-1">
+                <span className="text-[var(--color-text-secondary)]">{item.skill}</span>
+                <span className="font-mono font-semibold text-[var(--color-text)]">{item.score}%</span>
+              </div>
+              <div className="h-1.5 bg-[var(--color-muted)] rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all duration-500" style={{ width: `${item.score}%`, backgroundColor: item.color }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Top skills */}
       <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-5 animate-fade-in-up">
         <div className="flex items-center gap-2 mb-4">

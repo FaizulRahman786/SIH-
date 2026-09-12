@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Search, Filter, Clock, Star, Users, ArrowRight, BookOpen } from "lucide-react";
+import { Search, Filter, Clock, Star, Users, ArrowRight, BookOpen, Sparkles } from "lucide-react";
 import { courseApi } from "../../services/courseApi";
 import type { Course, CourseLevel, SkillDomain } from "../../types";
 import { Badge } from "../../components/common/Badge";
@@ -56,6 +56,16 @@ function CourseCard({ course, index }: { course: Course; index: number }) {
           <span key={s} className="text-[10px] bg-[var(--color-muted)] text-[var(--color-text-secondary)] px-2 py-0.5 rounded-full">{s}</span>
         ))}
       </div>
+
+      {course.aiReason && (
+        <div className="bg-[var(--color-blue-muted)] rounded-lg p-2.5 mb-3 text-[11px] text-[var(--color-blue-primary)] flex items-start gap-2 leading-relaxed">
+          <Sparkles size={13} className="flex-shrink-0 mt-0.5 text-[var(--color-blue-primary)]" />
+          <div className="min-w-0 flex-1">
+            <span className="font-semibold block text-[10px] uppercase tracking-wider mb-0.5">Why Recommended</span>
+            <span className="text-[var(--color-text-secondary)] line-clamp-2">{course.aiReason}</span>
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border)]">
         <Badge

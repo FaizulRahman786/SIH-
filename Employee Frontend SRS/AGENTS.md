@@ -1,6 +1,6 @@
-# figma-make-app
+# SkillSaarthi AI — Unified Frontend
 
-React + Vite + Tailwind CSS project running inside Figma Make.
+AI-Powered Competency and Workforce Intelligence Platform (Employee + Admin Portals).
 
 ## Development Server
 

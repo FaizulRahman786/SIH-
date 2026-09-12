@@ -182,49 +182,97 @@ function QuizView({
 
 function ResultView({ result, onBack }: { result: AssessmentResult; onBack: () => void }) {
   const navigate = useNavigate();
-  const passing = result.score >= 70;
+  const passing = result.score >= 60;
 
   return (
     <div className="p-5 lg:p-7 max-w-2xl mx-auto space-y-5 animate-fade-in-up">
-      <div className={`rounded-2xl p-6 text-center ${passing ? "bg-green-600" : "bg-amber-500"}`}>
-        <div className="text-5xl font-bold text-white font-mono animate-count-up">{result.score}%</div>
-        <div className="text-white/80 text-sm mt-1">{passing ? "Well done!" : "Good attempt"}</div>
-        <div className="text-white text-sm mt-2 leading-relaxed">{result.feedback}</div>
+      <div className={`rounded-2xl p-6 text-center ${passing ? "bg-green-600 text-white" : "bg-amber-500 text-white"}`}>
+        <div className="text-5xl font-bold font-mono animate-count-up">{result.score}%</div>
+        <div className="text-white/80 text-sm mt-1">{passing ? "Assessment Passed · Verified" : "Score Below 60% Threshold"}</div>
+        <div className="text-white text-sm mt-2 leading-relaxed max-w-md mx-auto">{result.feedback}</div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         {[
           { label: "Correct", value: result.correctAnswers },
           { label: "Total", value: result.totalQuestions },
-          { label: "Time", value: `${result.timeTaken}m` },
+          { label: "Time Taken", value: `${result.timeTaken}m` },
         ].map(({ label, value }) => (
-          <div key={label} className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-4 text-center">
+          <div key={label} className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-4 text-center shadow-xs">
             <div className="text-xl font-bold font-mono text-[var(--color-text)]">{value}</div>
             <div className="text-xs text-[var(--color-muted-fg)] mt-0.5">{label}</div>
           </div>
         ))}
       </div>
 
-      <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-5">
-        <h3 className="text-sm font-semibold text-[var(--color-text)] mb-3" style={{ fontFamily: "var(--font-display)" }}>
-          Competency Updates
-        </h3>
-        {Object.entries(result.competencyUpdates).map(([skill, delta]) => (
-          <div key={skill} className="flex items-center justify-between py-2 border-b border-[var(--color-border)] last:border-0">
-            <span className="text-sm text-[var(--color-text-secondary)] capitalize">{skill}</span>
-            {delta > 0
-              ? <span className="text-sm font-mono font-semibold text-green-600">+{delta} level</span>
-              : <span className="text-xs text-[var(--color-muted-fg)]">No change</span>}
+      {/* Closed Feedback Loop: Competency Movement */}
+      <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-5 shadow-xs">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-sm font-semibold text-[var(--color-text)]" style={{ fontFamily: "var(--font-display)" }}>
+              Competency Movement & Digital Twin Update
+            </h3>
+            <p className="text-xs text-[var(--color-muted-fg)] mt-0.5">
+              Deterministic capability calibration based on verified assessment result.
+            </p>
           </div>
-        ))}
+          {passing && (
+            <span className="text-[11px] font-mono font-bold bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300 px-2 py-0.5 rounded-full">
+              LIVE EVOLUTION
+            </span>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          {Object.entries(result.competencyUpdates).map(([skill, delta]) => {
+            const hasDelta = delta > 0;
+            return (
+              <div key={skill} className="p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-muted)]">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-bold text-[var(--color-text)] capitalize">{skill} Competency</span>
+                  {hasDelta ? (
+                    <span className="text-xs font-mono font-bold text-green-600 bg-green-50 dark:bg-green-950/40 px-2 py-0.5 rounded">
+                      +{delta} Level Verified
+                    </span>
+                  ) : (
+                    <span className="text-xs text-[var(--color-muted-fg)]">Unchanged</span>
+                  )}
+                </div>
+
+                {hasDelta ? (
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                      <span>Capability Level:</span>
+                      <span className="font-mono">Level 2/5 (Beginner) → <strong className="text-green-600">Level 3/5 (Intermediate)</strong></span>
+                    </div>
+                    <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                      <span>Skill Gap:</span>
+                      <span className="font-mono text-amber-600">Gap 2 → <strong className="text-green-600">Gap 1</strong> (Priority adjusted: Critical → Medium)</span>
+                    </div>
+                    <div className="text-[11px] text-[var(--color-muted-fg)] italic pt-1 border-t border-[var(--color-border)]">
+                      Evidence added: "Assessment passed (verified +1 level)"
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-[var(--color-muted-fg)]">
+                    Requires score ≥ 60% to advance competency level. Review feedback and retry.
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button onClick={onBack} className="flex-1 py-2.5 border border-[var(--color-border)] rounded-xl text-sm font-medium hover:bg-[var(--color-muted)] transition-colors">
           Back to Assessments
         </button>
+        <button onClick={() => navigate("/competencies")} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[var(--color-muted)] border border-[var(--color-border)] rounded-xl text-sm font-semibold hover:bg-[var(--color-surface)] transition-colors">
+          View Competency Twin
+        </button>
         <button onClick={() => navigate("/learning-path")} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[var(--color-blue-primary)] text-white rounded-xl text-sm font-semibold hover:bg-[var(--color-blue-light)] transition-colors">
-          View Learning Path
+          Updated Learning Path
         </button>
       </div>
     </div>

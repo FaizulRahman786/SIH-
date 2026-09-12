@@ -239,14 +239,43 @@ export default function DashboardPage() {
 
           {/* Target role */}
           <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Target size={14} className="text-[var(--color-blue-primary)]" />
-              <span className="text-xs font-mono text-[var(--color-muted-fg)] uppercase tracking-wider">Target Role</span>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Target size={14} className="text-[var(--color-blue-primary)]" />
+                <span className="text-xs font-mono text-[var(--color-muted-fg)] uppercase tracking-wider">Target Role</span>
+              </div>
+              <span className="text-xs font-mono font-bold text-[var(--color-blue-primary)] bg-[var(--color-blue-muted)] px-2 py-0.5 rounded">
+                68% Readiness
+              </span>
             </div>
             <div className="text-base font-semibold text-[var(--color-text)]" style={{ fontFamily: "var(--font-display)" }}>
               {DEMO_PROFILE.targetRole}
             </div>
-            <div className="text-xs text-[var(--color-muted-fg)] mt-1">{DEMO_PROFILE.department}</div>
+            <div className="text-xs text-[var(--color-muted-fg)] mt-0.5">{DEMO_PROFILE.department}</div>
+
+            {/* Role Readiness Breakdown */}
+            <div className="mt-3 pt-3 border-t border-[var(--color-border)] space-y-2">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-muted-fg)]">
+                Role Capability Breakdown
+              </div>
+              {[
+                { name: "Statistics", score: 86 },
+                { name: "SQL", score: 74 },
+                { name: "Python", score: 52 },
+                { name: "ML", score: 31 },
+              ].map((item) => (
+                <div key={item.name} className="flex items-center justify-between text-xs">
+                  <span className="text-[var(--color-text-secondary)]">{item.name}</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-16 h-1 bg-[var(--color-muted)] rounded-full overflow-hidden">
+                      <div className="h-full bg-[var(--color-blue-primary)] rounded-full" style={{ width: `${item.score}%` }} />
+                    </div>
+                    <span className="font-mono text-[10px] text-[var(--color-text)] w-7 text-right">{item.score}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
               <div className="flex justify-between text-xs text-[var(--color-muted-fg)] mb-1.5">
                 <span>Path progress</span>

@@ -135,8 +135,24 @@ export default function DocumentsPage() {
 
     const stages: DocumentStatus[] = ["extracting", "understanding", "generating", "ready"];
     for (const stage of stages) {
-      await new Promise((r) => setTimeout(r, 2000));
-      setDocuments((prev) => prev.map((d) => d.id === newDoc.id ? { ...d, status: stage } : d));
+      await new Promise((r) => setTimeout(r, 1200));
+      setDocuments((prev) =>
+        prev.map((d) =>
+          d.id === newDoc.id
+            ? {
+                ...d,
+                status: stage,
+                ...(stage === "ready"
+                  ? {
+                      assessmentId: "assess-004",
+                      pageCount: 34,
+                      topics: ["Statistical Inference", "Sampling Distribution", "Official Indicators"],
+                    }
+                  : {}),
+              }
+            : d
+        )
+      );
     }
   }, []);
 
